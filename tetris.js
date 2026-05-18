@@ -330,7 +330,10 @@ class TetrisGame {
         player.matrix.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value !== 0) {
-                    this.arena[y + player.pos.y][x + player.pos.x] = value;
+                    const boardY = y + player.pos.y;
+                    if (boardY >= 0 && boardY < ROWS) {
+                        this.arena[boardY][x + player.pos.x] = value;
+                    }
                 }
             });
         });
@@ -1204,7 +1207,15 @@ document.addEventListener('keydown', event => {
     // UI Navigation Logic
     const activeOverlays = Array.from(document.querySelectorAll('.overlay:not(.hidden)'));
     if (activeOverlays.length > 0) {
-        const overlay = activeOverlays[activeOverlays.length - 1];
+        let overlay = activeOverlays[0];
+        let maxZ = parseInt(window.getComputedStyle(overlay).zIndex) || 0;
+        for (let i = 1; i < activeOverlays.length; i++) {
+            let z = parseInt(window.getComputedStyle(activeOverlays[i]).zIndex) || 0;
+            if (z >= maxZ) {
+                maxZ = z;
+                overlay = activeOverlays[i];
+            }
+        }
 
         if (['arrowup', 'arrowdown', 'enter'].includes(key)) {
             const btns = Array.from(overlay.querySelectorAll('.menu-btn:not(.hidden)'));
@@ -2112,7 +2123,6 @@ document.getElementById('btn-settings').addEventListener('click', () => {
     syncActiveNav('settings-menu');
 });
 document.getElementById('btn-pause-settings').addEventListener('click', () => {
-    document.getElementById('pause-menu').classList.add('hidden');
     document.getElementById('settings-menu').classList.remove('hidden');
     syncActiveNav('settings-menu');
 });
