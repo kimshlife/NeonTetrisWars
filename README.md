@@ -1,9 +1,13 @@
 # Neon Tetris Wars
 
-## 개발자
+## 프로젝트 소개에 앞서
+- 본 프로젝트는 개발 구현의 일정 부분을 Google Antigravity를 활용하였습니다.
+- 본 프로젝트의 저작권은 GPL 3.0을 따릅니다.
+- 
 
-- kimshlife(김시후 / @kimshlife) : 기획 및 구현 전반
-- rotiple(김재현 / @Rotiple153) : 테스트 및 디버깅, 라이브(로컬) 서비스 및 개선 담당
+## 개발자
+- kimshlife (김시후 / @kimshlife) : 최초 기획 및 구현 전반
+- rotiple (김재현 / @Rotiple153) : 후속 기획 및 구현 전반, 테스트 및 디버깅, 라이브(로컬) 서비스 및 개선 담당
 
 ## 게임 소개
 
