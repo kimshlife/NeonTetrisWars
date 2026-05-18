@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Tetris Wars</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body data-theme="dark">
+    <div id="main-menu" class="overlay">
+        <h1>TETRIS WARS</h1>
+        <button class="menu-btn active-nav" id="btn-single">SINGLE PLAYER</button>
+        <button class="menu-btn" id="btn-versus">LOCAL VERSUS</button>
+        <button class="menu-btn" id="btn-network">NETWORK MULTIPLAYER</button>
+        <button class="menu-btn" id="btn-settings">SETTINGS</button>
+        <button class="menu-btn" id="btn-update-log-open" style="position: absolute; bottom: 30px; right: 30px; font-size: 0.9rem; padding: 10px 20px; min-width: auto;">UPDATE LOG</button>
+    </div>
+
+    <div id="settings-menu" class="overlay hidden" style="z-index: 200;">
+        <h2>SETTINGS</h2>
+        <div class="settings-container">
+            <!-- Theme Settings -->
+            <div class="player-config theme-settings">
+                <h3>Visuals</h3>
+                <label>Theme: 
+                    <select id="sel-theme">
+                        <option value="dark">Dark (Neon)</option>
+                        <option value="light">Light (Clean)</option>
+                        <option value="pastel">Pastel (Soft)</option>
+                    </select>
+                </label>
+                <label>Blocks: 
+                    <select id="sel-blockStyle">
+                        <option value="standard">Standard Colors</option>
+                        <option value="theme">Theme Matched</option>
+                    </select>
+                </label>
+            </div>
+            
+            <div class="player-config">
+                <h3>Single &amp; Network Multiplay</h3>
+                <label>Left: <input type="text" id="sol-left" value="ArrowLeft" readonly></label>
+                <label>Right: <input type="text" id="sol-right" value="ArrowRight" readonly></label>
+                <label>Soft Drop: <input type="text" id="sol-down" value="ArrowDown" readonly></label>
+                <label>Hard Drop: <input type="text" id="sol-drop" value="Space" readonly></label>
+                <label>Rotate CW: <input type="text" id="sol-rotateCW" value="ArrowUp" readonly></label>
+                <label>Rotate CCW: <input type="text" id="sol-rotateCCW" value="Z" readonly></label>
+                <label>Hold: <input type="text" id="sol-hold" value="Shift" readonly></label>
+            </div>
+            <div class="player-config">
+                <h3>Versus 1P (Left)</h3>
+                <label>Left: <input type="text" id="p1-left" value="A" readonly></label>
+                <label>Right: <input type="text" id="p1-right" value="D" readonly></label>
+                <label>Soft Drop: <input type="text" id="p1-down" value="S" readonly></label>
+                <label>Hard Drop: <input type="text" id="p1-drop" value="Space" readonly></label>
+                <label>Rotate CW: <input type="text" id="p1-rotateCW" value="E" readonly></label>
+                <label>Rotate CCW: <input type="text" id="p1-rotateCCW" value="Q" readonly></label>
+                <label>Hold: <input type="text" id="p1-hold" value="Shift" readonly></label>
+            </div>
+            <div class="player-config">
+                <h3>Versus 2P (Right)</h3>
+                <label>Left: <input type="text" id="p2-left" value="ArrowLeft" readonly></label>
+                <label>Right: <input type="text" id="p2-right" value="ArrowRight" readonly></label>
+                <label>Soft Drop: <input type="text" id="p2-down" value="ArrowDown" readonly></label>
+                <label>Hard Drop: <input type="text" id="p2-drop" value="Enter" readonly></label>
+                <label>Rotate CW: <input type="text" id="p2-rotateCW" value="ArrowUp" readonly></label>
+                <label>Rotate CCW: <input type="text" id="p2-rotateCCW" value="Z" readonly></label>
+                <label>Hold: <input type="text" id="p2-hold" value="Control" readonly></label>
+            </div>
+        </div>
+        <p class="settings-hint">Click an input and press any key to change</p>
+        <button class="menu-btn active-nav" id="btn-save-settings">SAVE & CLOSE</button>
+    </div>
+
+    <!-- Update Log Overlay -->
+    <div id="update-log-menu" class="overlay hidden" style="z-index: 250;">
+        <h2>UPDATE LOG</h2>
+        <div id="update-log-content" style="background: var(--panel-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--panel-border); width: 80%; max-width: 600px; max-height: 60vh; overflow-y: auto; text-align: left; color: var(--text-main); line-height: 1.6;">
+            <h3 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">2026.05.18 패치</h3>
+            <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px;">
+                <li><strong>백투백(Back-to-Back) 시스템:</strong> 테트리스나 T-Spin을 연속으로 성공시 가비지 라인이 +1 추가됩니다.</li>
+                <li><strong>UI 개선:</strong> 다음에 나올 블록을 1개에서 3개까지 미리 보여주도록 변경되었습니다.</li>
+                <li><strong>게임 모드 세분화:</strong> 네트워크 멀티플레이 방 생성 시 일반, 서든데스, 그라비티 모드(시간이 지날수록 낙하 속도 증가) 중 하나를 선택할 수 있습니다.</li>
+                <li><strong>버그 수정:</strong> 브라우저 창 최소화 시 게임 루프가 백그라운드에서 정상 작동하도록 수정되었습니다.</li>
+                <li><strong>채팅 편의성:</strong> 게임 시작 시 및 대기방으로 돌아왔을 때 채팅 내역이 초기화됩니다.</li>
+            </ul>
+            <h3 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">2026.05.15 패치</h3>
+            <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px;">
+                <li><strong>한글 및 띄어쓰기 지원:</strong> 닉네임, 방 제목, 채팅 입력창에서 한글 띄어쓰기가 정상적으로 작동합니다.</li>
+                <li><strong>채팅 기능:</strong> 네트워크 멀티플레이 시 참여자와 관전자가 함께 소통할 수 있는 채팅창이 추가되었습니다. 닉네임 옆에 [참여]/[관전] 구분 뱃지가 표시됩니다.</li>
+                <li><strong>채팅창 초기화:</strong> 방에 새로 입장하면 채팅 기록이 깨끗하게 초기화됩니다. 기존에 방 안에 있던 플레이어의 채팅은 그대로 유지됩니다.</li>
+                <li><strong>대치 상태 방지 시스템:</strong> 네트워크 대전 시 20초마다 모든 플레이어에게 쓰레기줄이 한 줄씩 추가되는 서든데스 룰이 적용되었습니다.</li>
+                <li><strong>패치노트 UI:</strong> 현재 보시는 업데이트 내역 확인 창이 추가되었습니다.</li>
+                <li><strong>버그 수정 - 창 최소화 시 게임 멈춤:</strong> 브라우저 창을 최소화하거나 다른 창으로 전환할 때 블록이 멈추던 버그를 수정했습니다. 이제 창이 최소화되어 있어도 게임은 정상적으로 진행됩니다.</li>
+                <li><strong>버그 수정 - 4인 배틀 퇴장:</strong> 4인 배틀 모드에서 플레이어가 연결을 끊어도 게임이 정상적으로 진행되고 최후 1인이 승자로 판정됩니다.</li>
+            </ul>
+        </div>
+        <button class="menu-btn active-nav" id="btn-close-update-log">BACK TO MENU</button>
+    </div>
+
+    <!-- Match Over Overlay -->
+    <div id="match-over" class="overlay hidden">
+        <h2 id="match-result">PLAYER 1 WINS!</h2>
+        <h3 id="match-score" class="hidden">SCORE: 0</h3>
+        <div id="record-notice" class="popup-static hidden">NEW RECORD!</div>
+        
+        <!-- Single/Versus Buttons -->
+        <button class="menu-btn active-nav btn-sp-mode" id="btn-match-restart">PLAY AGAIN</button>
+        <button class="menu-btn btn-sp-mode" id="btn-match-menu">MAIN MENU</button>
+
+        <!-- Network Multiplayer Buttons -->
+        <button class="menu-btn btn-mp-mode hidden" id="btn-match-return-room">RETURN TO ROOM</button>
+        <button class="menu-btn btn-mp-mode hidden" id="btn-match-leave-lobby">RETURN TO LOBBY</button>
+    </div>
+
+    <!-- Pause Overlay -->
+    <div id="pause-menu" class="overlay hidden">
+        <h2>PAUSED</h2>
+        <!-- Single / Versus 모드 버튼 -->
+        <button class="menu-btn active-nav btn-pause-sp" id="btn-pause-resume">RESUME</button>
+        <button class="menu-btn btn-pause-sp" id="btn-pause-restart">RESTART</button>
+        <button class="menu-btn btn-pause-sp" id="btn-pause-settings">SETTINGS</button>
+        <button class="menu-btn btn-pause-sp" id="btn-pause-menu">MAIN MENU</button>
+        <!-- Network Multiplayer 전용 버튼 -->
+        <button class="menu-btn active-nav btn-pause-net hidden" id="btn-pause-resume-net">RESUME</button>
+        <button class="menu-btn btn-pause-net hidden" id="btn-pause-lobby">RETURN TO LOBBY</button>
+    </div>
+
+
+
+    <!-- Lobby Menu Overlay -->
+    <div id="lobby-menu" class="overlay hidden">
+        <h2>MULTIPLAYER LOBBY</h2>
+        <div class="settings-container">
+            <div class="player-config" style="width: 100%; text-align: center;">
+                <label style="justify-content: center; gap: 10px;">
+                    Nickname: <input type="text" id="input-nickname" placeholder="Enter nickname..." maxlength="12">
+                </label>
+            </div>
+        </div>
+        <div id="room-list-container">
+            <h3>AVAILABLE ROOMS</h3>
+            <div id="room-list">
+                <!-- Dynamic Room List -->
+            </div>
+        </div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+            <button class="menu-btn active-nav" id="btn-create-room-open" style="min-width: 200px;">CREATE ROOM</button>
+            <button class="menu-btn" id="btn-lobby-settings" style="min-width: 200px;">SETTINGS</button>
+            <button class="menu-btn" id="btn-leave-lobby" style="min-width: 200px;">BACK TO MENU</button>
+        </div>
+    </div>
+
+    <!-- Create Room Overlay -->
+    <div id="create-room-menu" class="overlay hidden">
+        <h2>CREATE ROOM</h2>
+        <div class="settings-container">
+            <div class="player-config" style="display: flex; flex-direction: column; gap: 15px;">
+                <label>Room Name: <input type="text" id="input-room-name" placeholder="My Room"></label>
+                <label>Password: <input type="password" id="input-room-password" placeholder="(Optional)"></label>
+                <label>Mode:
+                    <select id="input-room-mode" style="width:150px;">
+                        <option value="1v1">1 vs 1</option>
+                        <option value="battle">Battle (Max 4)</option>
+                    </select>
+                </label>
+                <label style="align-items: center;">Rule:
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <select id="input-room-rule" style="width:120px;">
+                            <option value="normal">Normal</option>
+                            <option value="suddendeath">Sudden Death</option>
+                            <option value="gravity">Gravity</option>
+                        </select>
+                        <div class="tooltip-container">
+                            <span class="tooltip-icon">?</span>
+                            <div class="tooltip-text">
+                                <strong>Normal:</strong> 기본 룰 (아무 효과 없음)<br>
+                                <strong>Sudden Death:</strong> 20초마다 모든 플레이어에게 쓰레기 블록 1줄씩 추가<br>
+                                <strong>Gravity:</strong> 시간이 지날수록 블록이 떨어지는 속도가 점차 증가
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <button class="menu-btn active-nav" id="btn-create-room-confirm">CREATE</button>
+            <button class="menu-btn" id="btn-create-room-cancel">CANCEL</button>
+        </div>
+    </div>
+
+    <!-- Join Room Password Overlay -->
+    <div id="join-room-menu" class="overlay hidden">
+        <h2>ENTER PASSWORD</h2>
+        <div class="settings-container">
+            <div class="player-config">
+                <input type="password" id="input-join-password" placeholder="Password">
+            </div>
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <button class="menu-btn active-nav" id="btn-join-room-confirm">JOIN</button>
+            <button class="menu-btn" id="btn-join-room-cancel">CANCEL</button>
+        </div>
+    </div>
+
+    <!-- Room Waiting Overlay -->
+    <div id="room-waiting-menu" class="overlay hidden">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 80vw;">
+            <h2 id="waiting-room-name" style="margin-bottom: 0;">ROOM NAME</h2>
+            <span id="waiting-room-badges" style="display:flex; align-items:center; gap:5px; margin-bottom:0;"></span>
+            <div class="tooltip-container" id="waiting-rule-tooltip" style="display: none; margin-bottom: 0px;">
+                <span class="tooltip-icon" style="width: 24px; height: 24px; font-size: 1rem;">?</span>
+                <div class="tooltip-text" id="waiting-rule-desc" style="width: 280px; font-size: 0.9rem;">
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: flex-start; width: 100%; max-width: 900px; justify-content: center; margin-top: 15px;">
+            <div class="settings-container" style="flex: 0 0 auto;">
+                <div class="player-config" style="width: 340px; text-align: center; display:flex; flex-direction: column; gap:8px;">
+                    <div id="waiting-player-list" style="display:flex; flex-direction:column; gap:8px;">
+                        <!-- Dynamic player list -->
+                    </div>
+                </div>
+            </div>
+            <!-- 대기실 채팅 -->
+            <div class="chat-panel" id="waiting-chat-panel">
+                <div class="chat-header">채팅</div>
+                <div class="chat-messages" id="waiting-chat-messages"></div>
+                <div class="chat-input-row">
+                    <input type="text" class="chat-input" id="waiting-chat-input" placeholder="메시지를 입력하세요..." maxlength="200" autocomplete="off">
+                    <button class="chat-send-btn" id="waiting-chat-send">전송</button>
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <button class="menu-btn active-nav" id="btn-start-game" disabled style="opacity: 0.5; display: none;">START GAME</button>
+            <button class="menu-btn" id="btn-ready" style="display: none;">READY</button>
+            <button class="menu-btn" id="btn-leave-room">LEAVE ROOM</button>
+        </div>
+    </div>
+
+    <!-- Game UI -->
+    <div id="game-wrapper" class="hidden">
+
+        <!-- Countdown Overlay -->
+        <div id="countdown-overlay" class="hidden" style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: rgba(0,0,0,0.7); font-size: 10rem; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 30px #0DFF72; font-weight: bold; pointer-events: none; color: #fff;">
+            <span id="countdown-text" style="transition: transform 0.5s ease-out, opacity 0.5s ease-out;">3</span>
+        </div>
+
+        <!-- Player 1 (자신의 보드 - 크게) -->
+        <div id="player1" class="game-container">
+            <div class="game-info">
+                <h2 class="player-title" id="p1-title">PLAYER 1</h2>
+                <div class="hold-piece-container">
+                    <p>HOLD</p>
+                    <canvas class="hold-piece" width="120" height="120"></canvas>
+                </div>
+                <div class="score-board">
+                    <p>SCORE</p>
+                    <div class="score">0</div>
+                </div>
+                <div class="level-board">
+                    <p>LEVEL</p>
+                    <div class="level">1</div>
+                </div>
+                <div class="next-piece-container">
+                    <p>NEXT</p>
+                    <canvas class="next-piece" width="120" height="360"></canvas>
+                </div>
+                <div class="garbage-board">
+                    <p>INCOMING</p>
+                    <div class="garbage-meter">0</div>
+                </div>
+            </div>
+            <div class="board-wrapper" style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+                <h2 class="board-nickname" id="p1-board-name" style="color:var(--accent-color); text-shadow:var(--accent-glow-subtle); margin:0; font-size:1.5rem;">PLAYER 1</h2>
+                <div class="canvas-container">
+                    <canvas class="tetris" width="300" height="600"></canvas>
+                    <div class="action-text popup hidden">T-SPIN!</div>
+                    <div class="combo-text popup hidden">2 COMBO!</div>
+                    <div class="tetris-text popup hidden">TETRIS!</div>
+                    <div class="game-over hidden"><h2>TOP OUT</h2></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 2 (1v1 상대 보드) -->
+        <div id="player2" class="game-container">
+            <div class="board-wrapper" style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+                <h2 class="board-nickname" id="p2-board-name" style="color:var(--accent-color); text-shadow:var(--accent-glow-subtle); margin:0; font-size:1.5rem;">PLAYER 2</h2>
+                <div class="canvas-container">
+                    <canvas class="tetris" width="300" height="600"></canvas>
+                    <div class="action-text popup hidden">T-SPIN!</div>
+                    <div class="combo-text popup hidden">2 COMBO!</div>
+                    <div class="tetris-text popup hidden">TETRIS!</div>
+                    <div class="game-over hidden"><h2>TOP OUT</h2></div>
+                </div>
+            </div>
+            <div class="game-info">
+                <h2 class="player-title">PLAYER 2</h2>
+                <div class="hold-piece-container">
+                    <p>HOLD</p>
+                    <canvas class="hold-piece" width="120" height="120"></canvas>
+                </div>
+                <div class="score-board">
+                    <p>SCORE</p>
+                    <div class="score">0</div>
+                </div>
+                <div class="level-board">
+                    <p>LEVEL</p>
+                    <div class="level">1</div>
+                </div>
+                <div class="next-piece-container">
+                    <p>NEXT</p>
+                    <canvas class="next-piece" width="120" height="360"></canvas>
+                </div>
+                <div class="garbage-board">
+                    <p>INCOMING</p>
+                    <div class="garbage-meter">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 배틀 모드 상대방 미니보드 패널 -->
+        <div id="battle-opponents-panel" class="hidden">
+            <!-- JS로 동적 생성 -->
+        </div>
+
+        <!-- 관전자 전용 고정 LEAVE 버튼 -->
+        <button id="spectator-leave-btn" class="hidden">LEAVE</button>
+
+        <!-- 인게임 채팅 패널 (고정) -->
+        <div class="chat-panel" id="ingame-chat-panel" style="display: none;">
+            <div class="chat-header">채팅</div>
+            <div class="chat-messages" id="ingame-chat-messages"></div>
+            <div class="chat-input-row">
+                <input type="text" class="chat-input" id="ingame-chat-input" placeholder="메시지를 입력하세요..." maxlength="200" autocomplete="off">
+                <button class="chat-send-btn" id="ingame-chat-send">전송</button>
+            </div>
+        </div>
+
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="tetris.js"></script>
+</body>
+</html>
