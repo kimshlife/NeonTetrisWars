@@ -705,11 +705,11 @@ button:active {
     flex-shrink: 0;
 }
 
-/* 인게임 채팅은 fixed 좌측 하단 (관전자 LEAVE 버튼과 겹침 방지) */
+/* 인게임 채팅은 fixed 우측 하단, LEAVE 버튼 바로 위에 기본 위치 */
 #ingame-chat-panel {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
+    bottom: 100px;
+    right: 20px;
     z-index: 500;
     width: 280px;
     height: 320px;
@@ -725,6 +725,11 @@ button:active {
     text-align: center;
     background: rgba(0,255,255,0.05);
     flex-shrink: 0;
+    cursor: grab;
+    user-select: none;
+}
+.chat-header:active {
+    cursor: grabbing;
 }
 
 .chat-messages {

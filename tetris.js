@@ -2239,3 +2239,62 @@ function spectatorLeaveToLobby() {
 }
 
 document.getElementById('spectator-leave-btn').addEventListener('click', spectatorLeaveToLobby);
+
+// =============================================
+// 인게임 채팅창 드래그 이동 기능
+// =============================================
+(function () {
+    const chatPanel = document.getElementById('ingame-chat-panel');
+    const chatHeader = chatPanel.querySelector('.chat-header');
+
+    let isDragging = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    // bottom/right 기준 CSS를 top/left 기준으로 전환 (드래그 계산을 위해 필요)
+    function switchToTopLeft() {
+        const rect = chatPanel.getBoundingClientRect();
+        chatPanel.style.top = rect.top + 'px';
+        chatPanel.style.left = rect.left + 'px';
+        chatPanel.style.bottom = 'auto';
+        chatPanel.style.right = 'auto';
+    }
+
+    chatHeader.addEventListener('mousedown', (e) => {
+        // 채팅 입력창/버튼 클릭은 드래그 제외
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+
+        // 아직 top/left로 전환되지 않은 경우 전환
+        if (!chatPanel.style.top || chatPanel.style.top === 'auto') {
+            switchToTopLeft();
+        }
+
+        isDragging = true;
+        const rect = chatPanel.getBoundingClientRect();
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+        chatHeader.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+
+        let newLeft = e.clientX - dragOffsetX;
+        let newTop  = e.clientY - dragOffsetY;
+
+        // 화면 밖으로 벗어나지 않도록 클램핑
+        newLeft = Math.max(0, Math.min(window.innerWidth  - chatPanel.offsetWidth,  newLeft));
+        newTop  = Math.max(0, Math.min(window.innerHeight - chatPanel.offsetHeight, newTop));
+
+        chatPanel.style.left = newLeft + 'px';
+        chatPanel.style.top  = newTop  + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            chatHeader.style.cursor = 'grab';
+        }
+    });
+})();
