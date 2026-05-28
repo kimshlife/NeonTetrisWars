@@ -1,7 +1,8 @@
 const
     ROWS = 20,
     COLS = 10,
-    BLOCK_SIZE = 30;
+    BLOCK_SIZE = 30,
+    BUFFER_ROWS = 4; // 보드 상단 밖에 쌓인 블록을 저장하기 위한 숨김 버퍼 행 수
 
 const BLOCK_COLORS = {
     standard: [
@@ -120,7 +121,7 @@ class TetrisGame {
         this.nextContext.scale(BLOCK_SIZE, BLOCK_SIZE);
         this.holdContext.scale(BLOCK_SIZE, BLOCK_SIZE);
 
-        this.arena = this.createMatrix(COLS, ROWS);
+        this.arena = this.createMatrix(COLS, ROWS + BUFFER_ROWS); // BUFFER_ROWS개의 숨김 행 포함
         this.player = {
             pos: { x: 0, y: 0 },
             matrix: null,
@@ -262,7 +263,9 @@ class TetrisGame {
         for (let i = 0; i <= COLS; i++) { this.context.beginPath(); this.context.moveTo(i, 0); this.context.lineTo(i, ROWS); this.context.stroke(); }
         for (let i = 0; i <= ROWS; i++) { this.context.beginPath(); this.context.moveTo(0, i); this.context.lineTo(COLS, i); this.context.stroke(); }
 
-        this.drawMatrix(this.arena, { x: 0, y: 0 });
+        // arena는 BUFFER_ROWS만큼 위쪽 오프셋을 적용하여 화면에 보이는 ROWS만 렌더링
+        // canvas 클리핑으로 버퍼 행(보드 상단 밖)은 화면에 표시되지 않음
+        this.drawMatrix(this.arena, { x: 0, y: -BUFFER_ROWS });
 
         if (this.player.matrix) {
             this.drawGhost();
@@ -319,7 +322,9 @@ class TetrisGame {
                     const boardX = x + o.x;
                     if (boardX < 0 || boardX >= COLS) return true;
                     if (boardY >= ROWS) return true;
-                    if (boardY >= 0 && this.arena[boardY][boardX] !== 0) return true;
+                    // 버퍼 범위 내에서만 arena와 충돌 체크 (boardY + BUFFER_ROWS = arenaY)
+                    const arenaY = boardY + BUFFER_ROWS;
+                    if (arenaY >= 0 && this.arena[arenaY][boardX] !== 0) return true;
                 }
             }
         }
@@ -331,8 +336,10 @@ class TetrisGame {
             row.forEach((value, x) => {
                 if (value !== 0) {
                     const boardY = y + player.pos.y;
-                    if (boardY >= 0 && boardY < ROWS) {
-                        this.arena[boardY][x + player.pos.x] = value;
+                    const arenaY = boardY + BUFFER_ROWS;
+                    // 버퍼 포함 전체 arena 범위에 저장 (보드 상단 밖 블록도 보존)
+                    if (arenaY >= 0 && arenaY < ROWS + BUFFER_ROWS) {
+                        this.arena[arenaY][x + player.pos.x] = value;
                     }
                 }
             });
@@ -350,7 +357,8 @@ class TetrisGame {
         allCorners.forEach((c, index) => {
             let cx = this.player.pos.x + c.x;
             let cy = this.player.pos.y + c.y;
-            if (cx < 0 || cx >= COLS || cy >= ROWS || (cy >= 0 && this.arena[cy][cx] !== 0)) {
+            const arenaY = cy + BUFFER_ROWS;
+            if (cx < 0 || cx >= COLS || cy >= ROWS || (arenaY >= 0 && this.arena[arenaY][cx] !== 0)) {
                 blocks++;
                 if (frontCornerIndices.includes(index)) frontBlocks++;
             }
@@ -380,6 +388,7 @@ class TetrisGame {
     applyGarbage() {
         if (this.pendingGarbage > 0) {
             for (let i = 0; i < this.pendingGarbage; i++) {
+                // 버퍼 포함 arena에서 맨 위를 제거하고 맨 아래에 쓰레기 줄 추가
                 this.arena.shift();
                 let hole = Math.floor(Math.random() * COLS);
                 let row = new Array(COLS).fill(8);
@@ -400,7 +409,9 @@ class TetrisGame {
         let rowCount = 1;
         let linesCleared = 0;
 
-        outer: for (let y = this.arena.length - 1; y > 0; --y) {
+        // 버퍼 행(0~BUFFER_ROWS-1)을 포함한 전체 arena를 역순 탐색하여 꽉 찬 줄 제거
+        // 제거된 줄은 맨 위(버퍼 시작)로 빈 줄로 추가되어 블록이 자연스럽게 내려옴
+        outer: for (let y = this.arena.length - 1; y >= 0; --y) {
             for (let x = 0; x < this.arena[y].length; ++x) {
                 if (this.arena[y][x] === 0) continue outer;
             }
@@ -419,7 +430,8 @@ class TetrisGame {
         let isPerfectClear = false;
         if (linesCleared > 0) {
             let blocksLeft = 0;
-            for (let y = 0; y < ROWS; y++) {
+            // 버퍼 포함 전체 arena에서 블록 유무 확인
+            for (let y = 0; y < ROWS + BUFFER_ROWS; y++) {
                 for (let x = 0; x < COLS; x++) {
                     if (this.arena[y][x] !== 0) blocksLeft++;
                 }
@@ -2134,10 +2146,27 @@ document.getElementById('btn-save-settings').addEventListener('click', () => {
     document.getElementById('settings-menu').classList.add('hidden');
 });
 
-// Update Log
+// Update Log - PATCH_NOTES.html에서 동적으로 로드
+let patchNotesLoaded = false;
 document.getElementById('btn-update-log-open').addEventListener('click', () => {
     document.getElementById('update-log-menu').classList.remove('hidden');
     syncActiveNav('update-log-menu');
+
+    if (!patchNotesLoaded) {
+        fetch('PATCH_NOTES.html')
+            .then(res => {
+                if (!res.ok) throw new Error('패치 노트를 불러올 수 없습니다.');
+                return res.text();
+            })
+            .then(html => {
+                document.getElementById('update-log-content').innerHTML = html;
+                patchNotesLoaded = true;
+            })
+            .catch(err => {
+                document.getElementById('update-log-content').innerHTML =
+                    `<p style="color:#FF0055;">패치 노트 로드 실패: ${err.message}</p>`;
+            });
+    }
 });
 document.getElementById('btn-close-update-log').addEventListener('click', () => {
     document.getElementById('update-log-menu').classList.add('hidden');

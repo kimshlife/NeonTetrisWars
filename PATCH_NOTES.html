@@ -1,0 +1,37 @@
+<!--
+    PATCH_NOTES.html
+    Neon Tetris Wars - 업데이트 내역
+    이 파일은 index.html의 #update-log-content 에 동적으로 로드됩니다.
+-->
+
+<h3 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">2026.05.28 패치</h3>
+<ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px;">
+    <li><strong>버그 수정 - 상단 초과 블록 소실:</strong> 4-wide 등의 전략으로 블록을 보드 최상단 밖까지 쌓은 후 줄을 제거했을 때, 보드 밖으로 나온 블록 부분이 잘린 채 사라지던 버그를 수정했습니다. 이제 숨김 버퍼 행(BUFFER_ROWS)을 도입하여 상단 초과 블록이 정상적으로 보존되며, 줄 제거 시 위쪽 블록이 올바르게 내려옵니다.</li>
+</ul>
+
+<h3 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">2026.05.27 패치</h3>
+<ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px;">
+    <li><strong>인게임 채팅창 드래그 이동:</strong> 네트워크 멀티플레이 중 인게임 채팅창의 헤더(채팅 제목 영역)를 드래그하여 화면 내 원하는 위치로 자유롭게 옮길 수 있습니다. 화면 밖으로 나가지 않도록 클램핑이 적용되었으며, 기본 위치는 우측 하단 LEAVE 버튼 바로 위입니다.</li>
+    <li><strong>버그 수정 - 최상단 블록 미고정:</strong> 블록이 보드 최상단 위쪽에 걸친 상태로 굳을 때 블록이 정상적으로 고정되지 않던 버그를 수정했습니다. (싱글 및 네트워크 멀티플레이 공통 적용)</li>
+    <li><strong>버그 수정 - 일시정지 후 설정 복귀:</strong> 싱글플레이에서 ESC → 설정 진입 후 나왔을 때 게임 화면에 고립되어 키가 먹히지 않던 버그를 수정했습니다.</li>
+</ul>
+
+<h3 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">2026.05.18 패치</h3>
+<ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px;">
+    <li><strong>백투백(Back-to-Back) 시스템:</strong> 테트리스나 T-Spin을 연속으로 성공시 가비지 라인이 +1 추가됩니다.</li>
+    <li><strong>UI 개선:</strong> 다음에 나올 블록을 1개에서 3개까지 미리 보여주도록 변경되었습니다.</li>
+    <li><strong>게임 모드 세분화:</strong> 네트워크 멀티플레이 방 생성 시 일반, 서든데스, 그라비티 모드(시간이 지날수록 낙하 속도 증가) 중 하나를 선택할 수 있습니다.</li>
+    <li><strong>버그 수정:</strong> 브라우저 창 최소화 시 게임 루프가 백그라운드에서 정상 작동하도록 수정되었습니다.</li>
+    <li><strong>채팅 편의성:</strong> 게임 시작 시 및 대기방으로 돌아왔을 때 채팅 내역이 초기화됩니다.</li>
+</ul>
+
+<h3 style="color: var(--accent-color); margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">2026.05.15 패치</h3>
+<ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px;">
+    <li><strong>한글 및 띄어쓰기 지원:</strong> 닉네임, 방 제목, 채팅 입력창에서 한글 띄어쓰기가 정상적으로 작동합니다.</li>
+    <li><strong>채팅 기능:</strong> 네트워크 멀티플레이 시 참여자와 관전자가 함께 소통할 수 있는 채팅창이 추가되었습니다. 닉네임 옆에 [참여]/[관전] 구분 뱃지가 표시됩니다.</li>
+    <li><strong>채팅창 초기화:</strong> 방에 새로 입장하면 채팅 기록이 깨끗하게 초기화됩니다. 기존에 방 안에 있던 플레이어의 채팅은 그대로 유지됩니다.</li>
+    <li><strong>대치 상태 방지 시스템:</strong> 네트워크 대전 시 20초마다 모든 플레이어에게 쓰레기줄이 한 줄씩 추가되는 서든데스 룰이 적용되었습니다.</li>
+    <li><strong>패치노트 UI:</strong> 현재 보시는 업데이트 내역 확인 창이 추가되었습니다.</li>
+    <li><strong>버그 수정 - 창 최소화 시 게임 멈춤:</strong> 브라우저 창을 최소화하거나 다른 창으로 전환할 때 블록이 멈추던 버그를 수정했습니다. 이제 창이 최소화되어 있어도 게임은 정상적으로 진행됩니다.</li>
+    <li><strong>버그 수정 - 4인 배틀 퇴장:</strong> 4인 배틀 모드에서 플레이어가 연결을 끊어도 게임이 정상적으로 진행되고 최후 1인이 승자로 판정됩니다.</li>
+</ul>
