@@ -1016,11 +1016,15 @@ class MiniBoardRenderer {
             ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(10, i); ctx.stroke();
         }
 
-        // arena
+        // arena (버퍼 영역이 포함된 경우 오프셋 적용)
+        const offset = this.arena.length > 20 ? BUFFER_ROWS : 0;
         this.arena.forEach((row, y) => {
-            row.forEach((val, x) => {
-                if (val) this.drawBlock(ctx, x, y, val);
-            });
+            const dy = y - offset;
+            if (dy >= 0 && dy < 20) {
+                row.forEach((val, x) => {
+                    if (val) this.drawBlock(ctx, x, dy, val);
+                });
+            }
         });
 
         // 활성 피스
@@ -1710,8 +1714,8 @@ if (typeof io !== 'undefined') {
 
             data.players.forEach(p => {
                 if (p.id === mySocketId && !isSpectator) return; // 자신은 스킵
-                // 관전자면 보드를 약간 더 크게(20), 아니면 기본(15)
-                const renderer = new MiniBoardRenderer(p.id, p.nickname, isSpectator ? 20 : 15);
+                // 관전자도 동일한 크기(15) 사용
+                const renderer = new MiniBoardRenderer(p.id, p.nickname, 15);
                 opponentRenderers[p.id] = renderer;
                 renderer.appendTo(panel);
             });
@@ -1799,7 +1803,7 @@ if (typeof io !== 'undefined') {
             opponentRenderers = {};
 
             data.players.forEach(p => {
-                const renderer = new MiniBoardRenderer(p.id, p.nickname, 20); // 관전자는 크게
+                const renderer = new MiniBoardRenderer(p.id, p.nickname, 15); // 관전자도 동일한 크기(15) 사용
                 opponentRenderers[p.id] = renderer;
                 renderer.appendTo(panel);
                 if (!data.alivePlayers.includes(p.id)) renderer.eliminate();
